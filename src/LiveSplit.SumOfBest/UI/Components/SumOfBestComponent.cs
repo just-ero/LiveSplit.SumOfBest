@@ -1,10 +1,11 @@
-﻿using LiveSplit.Model;
-using LiveSplit.TimeFormatters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+
+using LiveSplit.Model;
+using LiveSplit.TimeFormatters;
 
 namespace LiveSplit.UI.Components
 {
@@ -27,7 +28,7 @@ namespace LiveSplit.UI.Components
         private RegularSumOfBestTimeFormatter Formatter { get; set; }
 
         public IDictionary<string, Action> ContextMenuControls => null;
-        
+
         public SumOfBestComponent(LiveSplitState state)
         {
             Formatter = new RegularSumOfBestTimeFormatter();
@@ -48,27 +49,27 @@ namespace LiveSplit.UI.Components
             UpdateSumOfBestValue(state);
         }
 
-        void CurrentState_RunModified(object sender, EventArgs e)
+        private void CurrentState_RunModified(object sender, EventArgs e)
         {
             UpdateSumOfBestValue(CurrentState);
         }
 
-        void state_OnReset(object sender, TimerPhase e)
+        private void state_OnReset(object sender, TimerPhase e)
         {
             UpdateSumOfBestValue((LiveSplitState)sender);
         }
 
-        void state_OnUndoSplit(object sender, EventArgs e)
+        private void state_OnUndoSplit(object sender, EventArgs e)
         {
             UpdateSumOfBestValue((LiveSplitState)sender);
         }
 
-        void state_OnSplit(object sender, EventArgs e)
+        private void state_OnSplit(object sender, EventArgs e)
         {
             UpdateSumOfBestValue((LiveSplitState)sender);
         }
 
-        void UpdateSumOfBestValue(LiveSplitState state)
+        private void UpdateSumOfBestValue(LiveSplitState state)
         {
             SumOfBestValue = SumOfBest.CalculateSumOfBest(state.Run, state.Settings.SimpleSumOfBest, true, state.CurrentTimingMethod);
             PreviousCalculationMode = state.Settings.SimpleSumOfBest;
@@ -78,10 +79,14 @@ namespace LiveSplit.UI.Components
         private bool CheckIfRunChanged(LiveSplitState state)
         {
             if (PreviousCalculationMode != state.Settings.SimpleSumOfBest)
+            {
                 return true;
+            }
 
             if (PreviousTimingMethod != state.CurrentTimingMethod)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -89,8 +94,8 @@ namespace LiveSplit.UI.Components
         private void DrawBackground(Graphics g, LiveSplitState state, float width, float height)
         {
             if (Settings.BackgroundColor.A > 0
-                || Settings.BackgroundGradient != GradientType.Plain
-                && Settings.BackgroundColor2.A > 0)
+                || (Settings.BackgroundGradient != GradientType.Plain
+                && Settings.BackgroundColor2.A > 0))
             {
                 var gradientBrush = new LinearGradientBrush(
                             new PointF(0, 0),
@@ -160,7 +165,6 @@ namespace LiveSplit.UI.Components
             Settings.SetSettings(settings);
         }
 
-
         public System.Xml.XmlNode GetSettings(System.Xml.XmlDocument document)
         {
             return Settings.GetSettings(document);
@@ -169,7 +173,9 @@ namespace LiveSplit.UI.Components
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             if (CheckIfRunChanged(state))
+            {
                 UpdateSumOfBestValue(state);
+            }
 
             InternalComponent.TimeValue = SumOfBestValue;
 
@@ -183,6 +189,9 @@ namespace LiveSplit.UI.Components
             CurrentState.OnReset -= state_OnReset;
         }
 
-        public int GetSettingsHashCode() => Settings.GetSettingsHashCode();
+        public int GetSettingsHashCode()
+        {
+            return Settings.GetSettingsHashCode();
+        }
     }
 }

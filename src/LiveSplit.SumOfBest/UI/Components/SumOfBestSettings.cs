@@ -1,8 +1,9 @@
-﻿using LiveSplit.TimeFormatters;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+
+using LiveSplit.TimeFormatters;
 
 namespace LiveSplit.UI.Components
 {
@@ -50,17 +51,17 @@ namespace LiveSplit.UI.Components
             cmbGradientType.DataBindings.Add("SelectedItem", this, "GradientString", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        void chkOverrideTimeColor_CheckedChanged(object sender, EventArgs e)
+        private void chkOverrideTimeColor_CheckedChanged(object sender, EventArgs e)
         {
             label2.Enabled = btnTimeColor.Enabled = chkOverrideTimeColor.Checked;
         }
 
-        void chkOverrideTextColor_CheckedChanged(object sender, EventArgs e)
+        private void chkOverrideTextColor_CheckedChanged(object sender, EventArgs e)
         {
             label1.Enabled = btnTextColor.Enabled = chkOverrideTextColor.Checked;
         }
 
-        void SumOfBestSettings_Load(object sender, EventArgs e)
+        private void SumOfBestSettings_Load(object sender, EventArgs e)
         {
             chkOverrideTextColor_CheckedChanged(null, null);
             chkOverrideTimeColor_CheckedChanged(null, null);
@@ -81,7 +82,7 @@ namespace LiveSplit.UI.Components
             }
         }
 
-        void cmbGradientType_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbGradientType_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnColor1.Visible = cmbGradientType.SelectedItem.ToString() != "Plain";
             btnColor2.DataBindings.Clear();
@@ -89,24 +90,30 @@ namespace LiveSplit.UI.Components
             GradientString = cmbGradientType.SelectedItem.ToString();
         }
 
-        void rdoHundredths_CheckedChanged(object sender, EventArgs e)
+        private void rdoHundredths_CheckedChanged(object sender, EventArgs e)
         {
             UpdateAccuracy();
         }
 
-        void rdoSeconds_CheckedChanged(object sender, EventArgs e)
+        private void rdoSeconds_CheckedChanged(object sender, EventArgs e)
         {
             UpdateAccuracy();
         }
 
-        void UpdateAccuracy()
+        private void UpdateAccuracy()
         {
             if (rdoSeconds.Checked)
+            {
                 Accuracy = TimeAccuracy.Seconds;
+            }
             else if (rdoTenths.Checked)
+            {
                 Accuracy = TimeAccuracy.Tenths;
+            }
             else
+            {
                 Accuracy = TimeAccuracy.Hundredths;
+            }
         }
 
         public void SetSettings(XmlNode node)
